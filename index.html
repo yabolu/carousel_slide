@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>轮播--侧滑</title>
+	<meta charset="utf-8">
+	<link rel="stylesheet" type="text/css" href="css/index.css">
+	<script type="text/javascript" src="js/jquery.min.js"></script>
+	<script type="text/javascript">
+
+	</script>
+</head>
+<body>
+<div class="carousel">
+	<ul class="img-ct clearfix">
+		<li>
+			<a href="#">
+				<img src="./static/imgs/2.jpg" alt="">
+			</a>
+		</li>
+		<li>
+			<a href="#">
+				<img src="./static/imgs/3.jpg" alt="">
+			</a>
+		</li>
+		<li>
+			<a href="#">
+				<img src="./static/imgs/4.jpg" alt="">
+			</a>
+		</li>
+		<li>
+			<a href="#">
+				<img src="./static/imgs/5.jpg" alt="">
+			</a>
+		</li>
+	</ul>
+	<a class="arrow prev"><</a>
+	<a class="arrow next">></a>
+	<ul class="bullet">
+		<li class="active"></li>
+		<li></li>
+		<li></li>
+		<li></li>
+	</ul>
+</div>
+<script type="text/javascript">
+	var $img = $('.carousel .img-ct img');
+	var $imgCt = $('.carousel .img-ct');
+	var $imgLi = $('.carousel .img-ct li');
+	var $bullets = $('.carousel .bullet>li');
+	var $imgCount = $img.length;
+	var imgWidth = $img.width();
+	var imgIndex = 0;
+	var isPlay = false;
+
+	$imgCt.append($imgLi.first().clone());//首尾添加元素
+	$imgCt.prepend($imgLi.last().clone());	
+
+	$imgCt.css({//重新设置ul宽度, left
+		width: ($imgCount+2)*imgWidth,
+		left: -imgWidth
+	});
+
+	$('.carousel .next').on('click', function(){
+		console.log(isPlay);
+		if(!isPlay){
+			playNext(1);
+			console.log(isPlay);
+		}
+	});
+
+	$('.carousel .prev').on('click', function(){
+		if(!isPlay){
+			playPrev(1);
+		}
+	});;
+
+
+	function playNext(len){
+		isPlay = true;
+		imgIndex+=len;
+		$imgCt.animate({
+			left: '-=' + len*imgWidth
+		}, function(){
+			if(imgIndex === $imgCount){
+				$imgCt.css({
+					left: -imgWidth
+				});
+				imgIndex = 0;
+			}
+			addActive();
+			isPlay = false;
+		});
+
+	}
+
+
+	function playPrev(len) {
+		isPlay = true;
+		imgIndex-=len;
+		$imgCt.animate({
+			left: '+=' + imgWidth*len
+		}, function(){
+			if(imgIndex<0) {
+				$imgCt.css({
+					left: -imgWidth * $imgCount
+				});
+				imgIndex = 3;
+			}
+
+			addActive();
+			isPlay = false;
+		});
+	}
+
+	function addActive() {
+		$bullets.removeClass('active').eq(imgIndex).addClass('active');
+	}
+
+	$bullets.on('click', function(){
+		var index = $(this).index();
+		if(index>imgIndex) {
+			playNext(index-imgIndex);
+		}else if(index<imgIndex) {
+			playPrev(imgIndex-index);
+		}
+	});
+
+</script>
+</body>
+</html>
